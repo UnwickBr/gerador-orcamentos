@@ -75,7 +75,11 @@ function renderItemsTable() {
 function renderPreviewItems() {
   refs.itemsBody.innerHTML = "";
 
-  const previewItems = items.length ? items : [{ quantity: "", unit: "", description: "", unitPrice: 0, total: 0 }];
+  const minimumRows = 7;
+  const previewItems = [...items];
+  while (previewItems.length < minimumRows) {
+    previewItems.push({ quantity: "", unit: "", description: "", unitPrice: 0, total: 0 });
+  }
 
   previewItems.forEach((item) => {
     const tr = document.createElement("tr");

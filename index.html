@@ -11,17 +11,26 @@
 </head>
 <body>
   <header class="topbar">
-    <div>
-      <h1>Gerador de Orcamentos</h1>
-      <p>Preencha os campos, visualize e baixe em PDF.</p>
+    <div class="brand-wrap">
+      <div class="brand-icon">D</div>
+      <div>
+        <h1>Gerador de Orcamentos</h1>
+        <p>Preencha os campos, visualize e baixe em PDF.</p>
+      </div>
     </div>
-    <button id="downloadPdfTop" class="btn btn-primary">Baixar PDF</button>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost">Historico</button>
+      <button class="btn btn-ghost">Perfil</button>
+      <button class="btn btn-ghost">Usuarios</button>
+      <button id="downloadPdfTop" class="btn btn-primary">Baixar PDF</button>
+    </div>
   </header>
 
   <main class="layout">
     <section class="card form-card">
       <h2>Informacoes do Orcamento</h2>
       <form id="budgetForm">
+        <h3 class="section-title">Dados da Empresa</h3>
         <div class="grid two">
           <label>
             Nome da Empresa
@@ -54,6 +63,7 @@
         </div>
 
         <hr />
+        <h3 class="section-title">Dados do Cliente</h3>
 
         <div class="grid two">
           <label>
@@ -105,7 +115,7 @@
           </label>
         </div>
 
-        <h3>Itens do Orcamento</h3>
+        <h3 class="section-title">Itens do Orcamento</h3>
         <div class="item-editor">
           <label>
             Descricao
