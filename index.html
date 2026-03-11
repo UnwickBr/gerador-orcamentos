@@ -1,0 +1,229 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador de Orcamentos PDF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Gerador de Orcamentos</h1>
+      <p>Preencha os campos, visualize e baixe em PDF.</p>
+    </div>
+    <button id="downloadPdfTop" class="btn btn-primary">Baixar PDF</button>
+  </header>
+
+  <main class="layout">
+    <section class="card form-card">
+      <h2>Informacoes do Orcamento</h2>
+      <form id="budgetForm">
+        <div class="grid two">
+          <label>
+            Nome da Empresa
+            <input type="text" name="companyName" value="ADAC" />
+          </label>
+          <label>
+            Subtitulo
+            <input type="text" name="companySubtitle" value="Farias Estofados" />
+          </label>
+        </div>
+
+        <label>
+          Endereco da Empresa
+          <textarea name="companyAddress" rows="2">Rua Eca Nader Borges, 524 - Casa</textarea>
+        </label>
+
+        <div class="grid three">
+          <label>
+            CNPJ
+            <input type="text" name="companyDocument" value="45.299.216.0001/38" />
+          </label>
+          <label>
+            Telefone da Empresa
+            <input type="text" name="companyPhone" value="(27) 98102-3051" />
+          </label>
+          <label>
+            Email
+            <input type="email" name="companyEmail" value="faria.victor@live.com" />
+          </label>
+        </div>
+
+        <hr />
+
+        <div class="grid two">
+          <label>
+            Cliente *
+            <input type="text" name="clientName" required placeholder="Nome do cliente" />
+          </label>
+          <label>
+            Condicao de Pagamento *
+            <input type="text" name="paymentCondition" required value="50% entrada e restante na entrega" />
+          </label>
+        </div>
+
+        <label>
+          Rua/Endereco *
+          <input type="text" name="clientStreet" required />
+        </label>
+
+        <div class="grid four">
+          <label>
+            Cidade *
+            <input type="text" name="clientCity" required />
+          </label>
+          <label>
+            CEP *
+            <input type="text" name="clientZip" required />
+          </label>
+          <label>
+            UF *
+            <input type="text" name="clientState" maxlength="2" required value="ES" />
+          </label>
+          <label>
+            Telefone *
+            <input type="text" name="clientPhone" required />
+          </label>
+        </div>
+
+        <div class="grid three">
+          <label>
+            Data de Entrada
+            <input type="date" name="entryDate" />
+          </label>
+          <label>
+            Previsao de Entrega
+            <input type="text" name="deliveryForecast" value="15 dias" />
+          </label>
+          <label>
+            Numero do Orcamento
+            <input type="text" name="budgetNumber" id="budgetNumberInput" readonly />
+          </label>
+        </div>
+
+        <h3>Itens do Orcamento</h3>
+        <div class="item-editor">
+          <label>
+            Descricao
+            <input type="text" id="itemDescription" placeholder="Descricao do item" />
+          </label>
+          <div class="grid three">
+            <label>
+              Quantidade
+              <input type="number" id="itemQuantity" min="1" step="1" placeholder="1" />
+            </label>
+            <label>
+              Unidade
+              <input type="text" id="itemUnit" placeholder="UN" />
+            </label>
+            <label>
+              Valor Unitario (R$)
+              <input type="number" id="itemPrice" min="0" step="0.01" placeholder="0.00" />
+            </label>
+          </div>
+          <button type="button" id="addItem" class="btn">Adicionar Item</button>
+        </div>
+
+        <div class="table-wrap">
+          <table id="itemsList">
+            <thead>
+              <tr>
+                <th>Qtd.</th>
+                <th>Unid.</th>
+                <th>Descricao</th>
+                <th>V. Unid.</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Gerar Orcamento</button>
+          <button type="button" id="downloadPdf" class="btn btn-secondary">Baixar PDF</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card preview-card">
+      <h2>Pre-visualizacao</h2>
+      <div id="previewSheet" class="sheet">
+        <div class="sheet-header">
+          <div class="sheet-company">
+            <h3 id="pCompanyName">ADAC</h3>
+            <h4 id="pCompanySubtitle">Farias Estofados</h4>
+            <p id="pCompanyAddress">Rua Eca Nader Borges, 524 - Casa</p>
+            <p id="pCompanyEmail">faria.victor@live.com</p>
+            <p id="pCompanyDocument">CNPJ: 45.299.216.0001/38</p>
+            <p id="pCompanyPhone">Tel: (27) 98102-3051</p>
+          </div>
+          <div class="sheet-info-box">
+            <div>
+              <strong>ORCAMENTO</strong>
+            </div>
+            <div>
+              <span>Data:</span> <span id="pDate">--/--/----</span>
+            </div>
+            <div>
+              <span>No:</span> <span id="pNumber">0001</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-client">
+          <p><strong>Cliente:</strong> <span id="pClientName">-</span></p>
+          <p><strong>Rua:</strong> <span id="pClientStreet">-</span></p>
+          <div class="line-group">
+            <p><strong>Cidade:</strong> <span id="pClientCity">-</span></p>
+            <p><strong>CEP:</strong> <span id="pClientZip">-</span></p>
+            <p><strong>UF:</strong> <span id="pClientState">-</span></p>
+          </div>
+          <div class="line-group">
+            <p><strong>Tel:</strong> <span id="pClientPhone">-</span></p>
+            <p><strong>Cond. Pgto:</strong> <span id="pPaymentCondition">-</span></p>
+          </div>
+          <div class="line-group">
+            <p><strong>Entrada:</strong> <span id="pEntryDate">-</span></p>
+            <p><strong>Prev. Entrega:</strong> <span id="pDeliveryForecast">-</span></p>
+          </div>
+        </div>
+
+        <table class="sheet-items">
+          <thead>
+            <tr>
+              <th>Qtd.</th>
+              <th>Unid.</th>
+              <th>Descricao</th>
+              <th>V. Unid.</th>
+              <th>Valor Total</th>
+            </tr>
+          </thead>
+          <tbody id="previewItems"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="validity">ORCAMENTO VALIDO POR 30 DIAS</td>
+              <td><strong>Total Geral:</strong></td>
+              <td id="pGrandTotal"><strong>R$ 0,00</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="signature">
+          <div class="line"></div>
+          <p>Assinatura</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
