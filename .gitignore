@@ -9,5 +9,12 @@ Thumbs.db
 # Logs
 *.log
 
+# Node
+node_modules/
+
+# Database
+/data/*.db
+/data/*.db-*
+
 # Python local server cache
 __pycache__/

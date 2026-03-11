@@ -47,11 +47,61 @@ function getTodayBR() {
   return `${dd}/${mm}/${yyyy}`;
 }
 
-function nextBudgetNumber() {
-  const key = "orcamento-numero";
-  const current = Number(localStorage.getItem(key) || "0") + 1;
-  localStorage.setItem(key, String(current));
-  return String(current).padStart(4, "0");
+function currentTotal() {
+  return items.reduce((sum, item) => sum + item.total, 0);
+}
+
+async function loadNextBudgetNumber() {
+  const response = await fetch("/api/budgets/next-number");
+  if (!response.ok) {
+    throw new Error("Nao foi possivel obter o proximo numero.");
+  }
+
+  const data = await response.json();
+  const number = String(data.nextNumber || "1").padStart(4, "0");
+  document.getElementById("budgetNumberInput").value = number;
+  refs.number.textContent = number;
+}
+
+async function saveBudget() {
+  const data = new FormData(form);
+  const payload = {
+    budgetNumber: data.get("budgetNumber"),
+    date: getTodayBR(),
+    companyName: data.get("companyName"),
+    companySubtitle: data.get("companySubtitle"),
+    companyAddress: data.get("companyAddress"),
+    companyDocument: data.get("companyDocument"),
+    companyPhone: data.get("companyPhone"),
+    companyEmail: data.get("companyEmail"),
+    clientName: data.get("clientName"),
+    clientStreet: data.get("clientStreet"),
+    clientCity: data.get("clientCity"),
+    clientZip: data.get("clientZip"),
+    clientState: data.get("clientState"),
+    clientPhone: data.get("clientPhone"),
+    paymentCondition: data.get("paymentCondition"),
+    entryDate: data.get("entryDate"),
+    deliveryForecast: data.get("deliveryForecast"),
+    items,
+    total: currentTotal()
+  };
+
+  const response = await fetch("/api/budgets", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao salvar orcamento no banco.");
+  }
+
+  const saved = await response.json();
+  const number = String(saved.budgetNumber || payload.budgetNumber || "1").padStart(4, "0");
+  document.getElementById("budgetNumberInput").value = number;
+  refs.number.textContent = number;
+  return saved;
 }
 
 function renderItemsTable() {
@@ -93,8 +143,7 @@ function renderPreviewItems() {
     refs.itemsBody.appendChild(tr);
   });
 
-  const total = items.reduce((sum, item) => sum + item.total, 0);
-  refs.grandTotal.innerHTML = `<strong>${brl(total)}</strong>`;
+  refs.grandTotal.innerHTML = `<strong>${brl(currentTotal())}</strong>`;
 }
 
 function updatePreview() {
@@ -118,7 +167,7 @@ function updatePreview() {
   refs.entryDate.textContent = formatDateBR(data.get("entryDate"));
   refs.deliveryForecast.textContent = data.get("deliveryForecast") || "-";
   refs.date.textContent = getTodayBR();
-  refs.number.textContent = data.get("budgetNumber") || "0001";
+  refs.number.textContent = data.get("budgetNumber") || "----";
 
   renderPreviewItems();
 }
@@ -204,9 +253,31 @@ document.querySelector("#itemsList tbody").addEventListener("click", (event) => 
 });
 
 form.addEventListener("input", updatePreview);
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   updatePreview();
+
+  if (!items.length) {
+    alert("Adicione pelo menos um item antes de gerar o orcamento.");
+    return;
+  }
+
+  const submitButton = form.querySelector("button[type='submit']");
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
+
+  try {
+    await saveBudget();
+    updatePreview();
+    alert("Orcamento salvo no banco com sucesso.");
+    await loadNextBudgetNumber();
+  } catch (error) {
+    console.error(error);
+    alert("Nao foi possivel salvar no banco. Verifique se o servidor esta rodando.");
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Gerar Orcamento";
+  }
 });
 
 downloadButtons.forEach((button) => {
@@ -220,8 +291,13 @@ downloadButtons.forEach((button) => {
   });
 });
 
-const defaultDate = new Date().toISOString().split("T")[0];
-form.entryDate.value = defaultDate;
-const number = nextBudgetNumber();
-document.getElementById("budgetNumberInput").value = number;
-updatePreview();
+(async () => {
+  try {
+    await loadNextBudgetNumber();
+  } catch (error) {
+    console.error(error);
+    document.getElementById("budgetNumberInput").value = "----";
+    refs.number.textContent = "----";
+  }
+  updatePreview();
+})();

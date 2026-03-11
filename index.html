@@ -34,31 +34,31 @@
         <div class="grid two">
           <label>
             Nome da Empresa
-            <input type="text" name="companyName" value="ADAC" />
+            <input type="text" name="companyName" />
           </label>
           <label>
             Subtitulo
-            <input type="text" name="companySubtitle" value="Farias Estofados" />
+            <input type="text" name="companySubtitle" />
           </label>
         </div>
 
         <label>
           Endereco da Empresa
-          <textarea name="companyAddress" rows="2">Rua Eca Nader Borges, 524 - Casa</textarea>
+          <textarea name="companyAddress" rows="2"></textarea>
         </label>
 
         <div class="grid three">
           <label>
             CNPJ
-            <input type="text" name="companyDocument" value="45.299.216.0001/38" />
+            <input type="text" name="companyDocument" />
           </label>
           <label>
             Telefone da Empresa
-            <input type="text" name="companyPhone" value="(27) 98102-3051" />
+            <input type="text" name="companyPhone" />
           </label>
           <label>
             Email
-            <input type="email" name="companyEmail" value="faria.victor@live.com" />
+            <input type="email" name="companyEmail" />
           </label>
         </div>
 
@@ -72,7 +72,7 @@
           </label>
           <label>
             Condicao de Pagamento *
-            <input type="text" name="paymentCondition" required value="50% entrada e restante na entrega" />
+            <input type="text" name="paymentCondition" required />
           </label>
         </div>
 
@@ -92,7 +92,7 @@
           </label>
           <label>
             UF *
-            <input type="text" name="clientState" maxlength="2" required value="ES" />
+            <input type="text" name="clientState" maxlength="2" required />
           </label>
           <label>
             Telefone *
@@ -107,7 +107,7 @@
           </label>
           <label>
             Previsao de Entrega
-            <input type="text" name="deliveryForecast" value="15 dias" />
+            <input type="text" name="deliveryForecast" />
           </label>
           <label>
             Numero do Orcamento
@@ -163,16 +163,16 @@
 
     <section class="card preview-card">
       <h2>Pre-visualizacao</h2>
-      <div id="previewSheet" class="sheet">
-        <div class="sheet-header">
-          <div class="sheet-company">
-            <h3 id="pCompanyName">ADAC</h3>
-            <h4 id="pCompanySubtitle">Farias Estofados</h4>
-            <p id="pCompanyAddress">Rua Eca Nader Borges, 524 - Casa</p>
-            <p id="pCompanyEmail">faria.victor@live.com</p>
-            <p id="pCompanyDocument">CNPJ: 45.299.216.0001/38</p>
-            <p id="pCompanyPhone">Tel: (27) 98102-3051</p>
-          </div>
+        <div id="previewSheet" class="sheet">
+          <div class="sheet-header">
+            <div class="sheet-company">
+              <h3 id="pCompanyName">-</h3>
+              <h4 id="pCompanySubtitle">-</h4>
+              <p id="pCompanyAddress">-</p>
+              <p id="pCompanyEmail">-</p>
+              <p id="pCompanyDocument">CNPJ: -</p>
+              <p id="pCompanyPhone">Tel: -</p>
+            </div>
           <div class="sheet-info-box">
             <div>
               <strong>ORCAMENTO</strong>
@@ -181,7 +181,7 @@
               <span>Data:</span> <span id="pDate">--/--/----</span>
             </div>
             <div>
-              <span>No:</span> <span id="pNumber">0001</span>
+              <span>No:</span> <span id="pNumber">----</span>
             </div>
           </div>
         </div>

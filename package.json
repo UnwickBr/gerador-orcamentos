@@ -1,0 +1,14 @@
+﻿{
+  "name": "gerador-orcamentos-pdf",
+  "version": "1.0.0",
+  "description": "Site para gerar orcamentos em PDF com numeracao salva em banco SQLite.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "better-sqlite3": "^11.8.1"
+  }
+}
