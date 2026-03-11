@@ -4,6 +4,9 @@ const downloadButtons = [
   document.getElementById("downloadPdf"),
   document.getElementById("downloadPdfTop")
 ];
+const logoutButton = document.getElementById("logoutButton");
+const sessionInfo = document.getElementById("sessionInfo");
+const usersLink = document.getElementById("usersLink");
 
 const items = [];
 
@@ -53,6 +56,10 @@ function currentTotal() {
 
 async function loadNextBudgetNumber() {
   const response = await fetch("/api/budgets/next-number");
+  if (response.status === 401) {
+    window.location.href = "/login";
+    return;
+  }
   if (!response.ok) {
     throw new Error("Nao foi possivel obter o proximo numero.");
   }
@@ -93,6 +100,11 @@ async function saveBudget() {
     body: JSON.stringify(payload)
   });
 
+  if (response.status === 401) {
+    window.location.href = "/login";
+    return null;
+  }
+
   if (!response.ok) {
     throw new Error("Erro ao salvar orcamento no banco.");
   }
@@ -102,6 +114,24 @@ async function saveBudget() {
   document.getElementById("budgetNumberInput").value = number;
   refs.number.textContent = number;
   return saved;
+}
+
+async function loadSession() {
+  const response = await fetch("/api/auth/me");
+  if (!response.ok) {
+    window.location.href = "/login";
+    return null;
+  }
+
+  const data = await response.json();
+  const user = data.user;
+  sessionInfo.textContent = `Logado como ${user.username} (${user.role})`;
+
+  if (user.role === "admin") {
+    usersLink.style.display = "inline-flex";
+  }
+
+  return user;
 }
 
 function renderItemsTable() {
@@ -267,7 +297,8 @@ form.addEventListener("submit", async (event) => {
   submitButton.textContent = "Salvando...";
 
   try {
-    await saveBudget();
+    const saved = await saveBudget();
+    if (!saved) return;
     updatePreview();
     alert("Orcamento salvo no banco com sucesso.");
     await loadNextBudgetNumber();
@@ -278,6 +309,11 @@ form.addEventListener("submit", async (event) => {
     submitButton.disabled = false;
     submitButton.textContent = "Gerar Orcamento";
   }
+});
+
+logoutButton.addEventListener("click", async () => {
+  await fetch("/api/auth/logout", { method: "POST" });
+  window.location.href = "/login";
 });
 
 downloadButtons.forEach((button) => {
@@ -293,6 +329,7 @@ downloadButtons.forEach((button) => {
 
 (async () => {
   try {
+    await loadSession();
     await loadNextBudgetNumber();
   } catch (error) {
     console.error(error);

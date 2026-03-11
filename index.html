@@ -15,13 +15,13 @@
       <div class="brand-icon">D</div>
       <div>
         <h1>Gerador de Orcamentos</h1>
-        <p>Preencha os campos, visualize e baixe em PDF.</p>
+        <p id="sessionInfo">Preencha os campos, visualize e baixe em PDF.</p>
       </div>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-ghost">Historico</button>
-      <button class="btn btn-ghost">Perfil</button>
-      <button class="btn btn-ghost">Usuarios</button>
+      <a class="btn btn-ghost" href="/">Orcamentos</a>
+      <a id="usersLink" class="btn btn-ghost" href="/users" style="display:none;">Usuarios</a>
+      <button id="logoutButton" class="btn btn-ghost" type="button">Sair</button>
       <button id="downloadPdfTop" class="btn btn-primary">Baixar PDF</button>
     </div>
   </header>

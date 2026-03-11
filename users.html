@@ -1,0 +1,71 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usuarios - Gerador de Orcamentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-icon">D</div>
+      <div>
+        <h1>Usuarios</h1>
+        <p id="usersSessionInfo">Painel de administracao.</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="/">Orcamentos</a>
+      <button id="usersLogoutButton" class="btn btn-ghost" type="button">Sair</button>
+    </div>
+  </header>
+
+  <main class="users-layout">
+    <section class="card users-card">
+      <h2>Criar Novo Usuario</h2>
+      <form id="createUserForm">
+        <label>
+          Usuario
+          <input type="text" id="newUsername" required />
+        </label>
+        <label>
+          Senha
+          <input type="password" id="newPassword" minlength="6" required />
+        </label>
+        <label>
+          Perfil
+          <select id="newRole">
+            <option value="user">Usuario</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </label>
+        <button class="btn btn-primary" type="submit">Criar Usuario</button>
+      </form>
+      <p id="createUserMessage"></p>
+    </section>
+
+    <section class="card users-card">
+      <h2>Usuarios Cadastrados</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuario</th>
+              <th>Perfil</th>
+              <th>Criado em</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="users.js"></script>
+</body>
+</html>

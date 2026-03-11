@@ -1,12 +1,15 @@
 ﻿# Gerador de Orcamentos em PDF
 
-Site para preencher dados, gerar o layout do orcamento e exportar PDF. Agora com backend Node.js + SQLite para controlar o numero do orcamento no banco.
+Site para preencher dados, gerar o layout do orcamento e exportar PDF. Agora com backend Node.js + SQLite para controlar o numero do orcamento e autenticar usuarios.
 
 ## Funcionalidades
 
 - Campos do formulario iniciam em branco.
 - Numero do orcamento vem do banco de dados (SQLite).
 - Cada clique em `Gerar Orcamento` salva um registro no banco.
+- Login com usuario e senha.
+- Painel de administracao para criar usuarios.
+- Perfis `admin` e `user`.
 - Adicao/remocao de itens com total automatico.
 - Pre-visualizacao do documento antes de baixar.
 - Exportacao para PDF no navegador.
@@ -34,10 +37,17 @@ npm start
 
 `http://localhost:3000`
 
+## Acesso inicial
+
+- Usuario admin padrao: `admin`
+- Senha padrao: `admin123`
+
+Ao entrar como admin, acesse `/users` para criar novos logins.
+
 ## Banco de dados
 
 - Arquivo SQLite: `data/budgets.db`
-- Tabela principal: `budgets`
+- Tabelas: `budgets` e `users`
 - O numero do orcamento e o `id` auto incremento da tabela.
 
 ## Estrutura
@@ -46,6 +56,8 @@ npm start
 - `styles.css`: visual da pagina e da folha.
 - `app.js`: logica do frontend (itens, preview, PDF e chamadas API).
 - `server.js`: API e persistencia SQLite.
+- `login.html` e `login.js`: autenticacao.
+- `users.html` e `users.js`: gestao de usuarios (admin).
 - `package.json`: scripts e dependencias Node.
 
 ## Publicar no GitHub
