@@ -7,6 +7,8 @@ const Database = require("better-sqlite3");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
+const ADMIN_USERNAME = "fariavictor@live.com";
+const ADMIN_PASSWORD = "01043678vV@";
 
 const dataDir = path.join(__dirname, "data");
 if (!fs.existsSync(dataDir)) {
@@ -34,26 +36,28 @@ db.exec(`
   );
 `);
 
-function ensureDefaultAdmin() {
-  const adminCount = db
-    .prepare("SELECT COUNT(*) AS count FROM users WHERE role = 'admin'")
-    .get().count;
+function ensureConfiguredAdmin() {
+  const nowIso = new Date().toISOString();
+  const hash = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+  const existing = db.prepare("SELECT id FROM users WHERE username = ?").get(ADMIN_USERNAME);
 
-  if (adminCount > 0) {
+  if (existing) {
+    db.prepare("UPDATE users SET password_hash = ?, role = 'admin' WHERE id = ?").run(
+      hash,
+      existing.id
+    );
     return;
   }
 
-  const nowIso = new Date().toISOString();
-  const hash = bcrypt.hashSync("admin123", 10);
-
-  db.prepare(
-    "INSERT INTO users (username, password_hash, role, created_at) VALUES (?, ?, 'admin', ?)"
-  ).run("admin", hash, nowIso);
-
-  console.log("Usuario admin padrao criado: usuario 'admin' e senha 'admin123'.");
+  db.prepare("INSERT INTO users (username, password_hash, role, created_at) VALUES (?, ?, ?, ?)").run(
+    ADMIN_USERNAME,
+    hash,
+    "admin",
+    nowIso
+  );
 }
 
-ensureDefaultAdmin();
+ensureConfiguredAdmin();
 
 app.use(express.json({ limit: "2mb" }));
 app.use(
@@ -87,26 +91,31 @@ function requireAdmin(req, res, next) {
   return next();
 }
 
-app.get("/login", (req, res) => {
-  if (req.session.user) {
-    return res.redirect("/");
-  }
+app.get("/", (_req, res) => {
   return res.sendFile(path.join(__dirname, "login.html"));
 });
 
-app.get("/", (req, res) => {
+app.get("/login", (_req, res) => {
+  return res.redirect("/");
+});
+
+app.get("/register", (_req, res) => {
+  return res.sendFile(path.join(__dirname, "register.html"));
+});
+
+app.get("/app", (req, res) => {
   if (!req.session.user) {
-    return res.redirect("/login");
+    return res.redirect("/");
   }
   return res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.get("/users", (req, res) => {
   if (!req.session.user) {
-    return res.redirect("/login");
+    return res.redirect("/");
   }
   if (req.session.user.role !== "admin") {
-    return res.redirect("/");
+    return res.redirect("/app");
   }
   return res.sendFile(path.join(__dirname, "users.html"));
 });
@@ -143,6 +152,38 @@ app.post("/api/auth/login", (req, res) => {
   };
 
   return res.json({ user: req.session.user });
+});
+
+app.post("/api/auth/register", (req, res) => {
+  const username = String(req.body?.username || "").trim();
+  const password = String(req.body?.password || "");
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "Informe usuario e senha." });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ error: "A senha deve ter pelo menos 6 caracteres." });
+  }
+
+  const exists = db.prepare("SELECT id FROM users WHERE username = ?").get(username);
+  if (exists) {
+    return res.status(409).json({ error: "Usuario ja existe." });
+  }
+
+  const hash = bcrypt.hashSync(password, 10);
+  const nowIso = new Date().toISOString();
+
+  const result = db
+    .prepare("INSERT INTO users (username, password_hash, role, created_at) VALUES (?, ?, 'user', ?)")
+    .run(username, hash, nowIso);
+
+  return res.status(201).json({
+    id: Number(result.lastInsertRowid),
+    username,
+    role: "user",
+    createdAt: nowIso
+  });
 });
 
 app.post("/api/auth/logout", (req, res) => {

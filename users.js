@@ -13,7 +13,7 @@ function formatDate(isoDate) {
 async function requireAdminSession() {
   const response = await fetch("/api/auth/me");
   if (!response.ok) {
-    window.location.href = "/login";
+    window.location.href = "/";
     return null;
   }
 
@@ -78,7 +78,7 @@ form.addEventListener("submit", async (event) => {
 
 logoutButton.addEventListener("click", async () => {
   await fetch("/api/auth/logout", { method: "POST" });
-  window.location.href = "/login";
+  window.location.href = "/";
 });
 
 (async () => {

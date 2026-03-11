@@ -398,11 +398,18 @@ select {
 .auth-btn {
   width: 100%;
   margin-top: 0.5rem;
+  text-align: center;
+  display: inline-flex;
+  justify-content: center;
 }
 
 .auth-hint {
   margin-top: 0.95rem;
   font-size: 0.92rem;
+}
+
+.auth-secondary-btn {
+  margin-top: 0.6rem;
 }
 
 .auth-error {

@@ -39,10 +39,13 @@ npm start
 
 ## Acesso inicial
 
-- Usuario admin padrao: `admin`
-- Senha padrao: `admin123`
+- Usuario admin padrao: `fariavictor@live.com`
+- Senha padrao: `01043678vV@`
 
-Ao entrar como admin, acesse `/users` para criar novos logins.
+Ao abrir `http://localhost:3000`, a pagina inicial sera o login.
+Depois de autenticar, o sistema redireciona para `/app`.
+Para criar conta comum, use o botao `Criar Login e Senha` na tela de login.
+Como admin, acesse `/users` para criar novos logins e novos administradores.
 
 ## Banco de dados
 

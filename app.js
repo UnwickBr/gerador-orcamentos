@@ -57,7 +57,7 @@ function currentTotal() {
 async function loadNextBudgetNumber() {
   const response = await fetch("/api/budgets/next-number");
   if (response.status === 401) {
-    window.location.href = "/login";
+    window.location.href = "/";
     return;
   }
   if (!response.ok) {
@@ -101,7 +101,7 @@ async function saveBudget() {
   });
 
   if (response.status === 401) {
-    window.location.href = "/login";
+    window.location.href = "/";
     return null;
   }
 
@@ -119,7 +119,7 @@ async function saveBudget() {
 async function loadSession() {
   const response = await fetch("/api/auth/me");
   if (!response.ok) {
-    window.location.href = "/login";
+    window.location.href = "/";
     return null;
   }
 
@@ -313,7 +313,7 @@ form.addEventListener("submit", async (event) => {
 
 logoutButton.addEventListener("click", async () => {
   await fetch("/api/auth/logout", { method: "POST" });
-  window.location.href = "/login";
+  window.location.href = "/";
 });
 
 downloadButtons.forEach((button) => {

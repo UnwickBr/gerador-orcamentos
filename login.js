@@ -4,7 +4,7 @@ const errorEl = document.getElementById("loginError");
 async function checkSession() {
   const response = await fetch("/api/auth/me");
   if (response.ok) {
-    window.location.href = "/";
+    window.location.href = "/app";
   }
 }
 
@@ -27,7 +27,7 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
-  window.location.href = "/";
+  window.location.href = "/app";
 });
 
 checkSession().catch(() => {
