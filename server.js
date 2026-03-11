@@ -284,6 +284,6 @@ app.post("/api/budgets", requireAuth, (req, res) => {
 
 app.use(express.static(__dirname, { index: false }));
 
-app.listen(port, () => {
-  console.log(`Servidor iniciado em http://localhost:${port}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Servidor iniciado na porta ${port}`);
 });
